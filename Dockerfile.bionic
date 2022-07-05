@@ -1,0 +1,36 @@
+FROM hexpm/elixir:1.13.4-erlang-25.0.1-ubuntu-bionic-20210930
+
+RUN mix local.hex --force && mix local.rebar --force
+
+WORKDIR /var/app
+
+COPY mix.exs /var/app/mix.exs
+COPY mix.lock /var/app/mix.lock
+
+RUN mix do deps.get --only $MIX_ENV, deps.compile, compile
+
+
+# FROM hexpm/elixir:1.13.4-erlang-25.0.2-alpine-3.16.0
+
+# RUN set -xe && apk add -U inotify-tools && rm -rf /var/cache/apk/*
+
+# WORKDIR /var/app
+
+# ARG MIX_ENV=prod
+# ENV MIX_ENV=$MIX_ENV
+
+# RUN echo "current env is >$MIX_ENV<"
+
+# COPY --from=build /var/app /var/app
+
+# COPY .iex.exs /var/app/.iex.exs
+# COPY lib /var/app/lib
+# COPY priv /var/app/priv
+
+# RUN mix local.hex --force && mix local.rebar --force
+
+# RUN mix compile
+
+# EXPOSE 4000
+
+# CMD ["elixir", "--sname", "app", "--cookie", "secret", "-S", "mix", "phx.server", "--preload-modules"]
